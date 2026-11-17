@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects | Georges Sfeir</title>
+  <meta name="description" content="Research projects led by Georges Sfeir, including the Marie Skłodowska-Curie Econ-ML project.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="projects">
+  <header id="site-header"></header>
+
+  <main>
+    <div class="page-head">
+      <div class="container">
+        <h1>Projects</h1>
+        <p>Research projects and funded fellowships.</p>
+      </div>
+    </div>
+
+    <section class="block">
+      <div class="container" id="project-list"></div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+  <script src="assets/js/site.js"></script>
+  <script src="data/publications.js"></script>
+  <script src="data/projects.js"></script>
+  <script>
+    (function () {
+      var byId = {};
+      (window.PUBLICATIONS || []).forEach(function (p) { byId[p.id] = p; });
+
+      function esc(s) {
+        return String(s || "").replace(/[&<>"]/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+        });
+      }
+
+      document.getElementById("project-list").innerHTML = (window.PROJECTS || []).map(function (pr) {
+        var meta = [
+          ["Role", pr.role],
+          ["Funding", pr.funding],
+          ["Award", pr.amount],
+          ["Period", pr.period],
+          ["Host", pr.host],
+        ].filter(function (r) { return r[1]; })
+         .map(function (r) { return "<dt>" + r[0] + "</dt><dd>" + esc(r[1]) + "</dd>"; }).join("");
+
+        var buttons = "";
+        if (pr.website) buttons += '<a class="btn" href="' + esc(pr.website) + '" target="_blank" rel="noopener">Project website ↗</a>';
+        (pr.code || []).forEach(function (c) {
+          buttons += '<a class="btn ghost" href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.label) + " ↗</a>";
+        });
+
+        var papers = (pr.papers || []).map(function (id) { return byId[id]; }).filter(Boolean);
+        function list(title, arr) {
+          if (!arr.length) return "";
+          return "<h4>" + title + '</h4><div class="related">' +
+            arr.map(function (p) { return window.renderPub(p, { showYear: true }); }).join("") + "</div>";
+        }
+
+        return '<article class="card">' +
+          '<div class="card-head"><h2>' + esc(pr.title) + "</h2><p>" + esc(pr.subtitle) + "</p></div>" +
+          '<div class="card-body">' +
+            "<p>" + esc(pr.description) + "</p>" +
+            '<dl class="meta">' + meta + "</dl>" +
+            (buttons ? '<div class="btn-row">' + buttons + "</div>" : "") +
+            list("Related conference papers", papers) +
+          "</div></article>";
+      }).join("");
+    })();
+  </script>
+</body>
+</html>

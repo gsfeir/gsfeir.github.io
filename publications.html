@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Publications | Georges Sfeir</title>
+  <meta name="description" content="Journal articles and conference papers by Georges Sfeir.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="publications">
+  <header id="site-header"></header>
+
+  <main>
+    <div class="page-head">
+      <div class="container">
+        <h1>Publications</h1>
+        <p>Journal articles and conference papers. For citation metrics, see
+          <a href="https://scholar.google.com/citations?user=Ysyx8FoAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a>.</p>
+      </div>
+    </div>
+
+    <section class="block">
+      <div class="container">
+        <div class="pub-toolbar">
+          <div class="filters" id="filters" role="tablist" aria-label="Filter publications"></div>
+          <input class="search" id="search" type="search" placeholder="Search title, author, venue…" aria-label="Search publications">
+        </div>
+        <div id="pub-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+  <script src="assets/js/site.js"></script>
+  <script src="data/publications.js"></script>
+  <script>
+    (function () {
+      var pubs = window.PUBLICATIONS || [];
+      var FILTERS = [
+        { key: "all", label: "All" },
+        { key: "published", label: "Published" },
+        { key: "under-review", label: "Under review" },
+        { key: "conference", label: "Conference papers" },
+      ];
+      var state = { filter: "all", q: "" };
+
+      // Allow links like publications.html#conference
+      var hash = location.hash.replace("#", "");
+      if (FILTERS.some(function (f) { return f.key === hash; })) state.filter = hash;
+
+      var filtersEl = document.getElementById("filters");
+      var listEl = document.getElementById("pub-list");
+      var searchEl = document.getElementById("search");
+
+      function count(key) {
+        return key === "all" ? pubs.length : pubs.filter(function (p) { return p.status === key; }).length;
+      }
+
+      function drawFilters() {
+        filtersEl.innerHTML = FILTERS.map(function (f) {
+          return '<button role="tab" data-key="' + f.key + '" class="' + (state.filter === f.key ? "active" : "") +
+                 '" aria-selected="' + (state.filter === f.key) + '">' + f.label +
+                 '<span class="count">' + count(f.key) + "</span></button>";
+        }).join("");
+      }
+
+      function norm(s) {
+        return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+      }
+
+      function drawList() {
+        var q = norm(state.q.trim());
+        var shown = pubs.filter(function (p) {
+          if (state.filter !== "all" && p.status !== state.filter) return false;
+          if (!q) return true;
+          return norm([p.title, p.authors, p.venue, p.note, p.year].join(" ")).indexOf(q) !== -1;
+        });
+
+        if (!shown.length) {
+          listEl.innerHTML = '<p class="empty">No publications match your search.</p>';
+          return;
+        }
+
+        // Newest first; papers from the same year keep their order in the file.
+        var sorted = shown
+          .map(function (p, i) { return { p: p, i: i }; })
+          .sort(function (a, b) { return (b.p.year - a.p.year) || (a.i - b.i); })
+          .map(function (x) { return x.p; });
+
+        listEl.innerHTML = sorted.map(function (p) {
+          return window.renderPub(p, { badge: true, showYear: true });
+        }).join("");
+      }
+
+      filtersEl.addEventListener("click", function (e) {
+        var b = e.target.closest("button");
+        if (!b) return;
+        state.filter = b.getAttribute("data-key");
+        history.replaceState(null, "", state.filter === "all" ? location.pathname : "#" + state.filter);
+        drawFilters();
+        drawList();
+      });
+      searchEl.addEventListener("input", function () { state.q = searchEl.value; drawList(); });
+
+      drawFilters();
+      drawList();
+    })();
+  </script>
+</body>
+</html>
