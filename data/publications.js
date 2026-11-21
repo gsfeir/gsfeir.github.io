@@ -39,18 +39,19 @@ window.PUBLICATIONS = [
     note: "Under review at Transportation Research Part C: Emerging Technologies",
     link: "https://doi.org/10.48550/arXiv.2609.20655",
   },
+
+/* ---------------- Journal papers — published ---------------- */
+   
   {
     id: "J9",
-    status: "under-review",
-    year: 2026,
+    status: "published",
+    year: 2027,
     authors: "Sfeir, G., Hess, S., Hancock, T.O., Rodrigues, F., Rad, J.A., Bliemer, M., Beck, M., Khan, F.",
     title: "A Bayesian latent class reinforcement learning framework to capture adaptive, feedback-driven travel behaviour",
     venue: "arXiv preprint arXiv:2512.14713",
-    note: "Under review at Transportation Research Part C: Emerging Technologies",
-    link: "https://doi.org/10.48550/arXiv.2512.14713",
+    note: "Transportation Research Part C: Emerging Technologies, 195, 106171",
+    link: "https://doi.org/10.1016/j.trc.2026.106171",
   },
-
-  /* ---------------- Journal papers — published ---------------- */
   {
     id: "J8",
     status: "published",
