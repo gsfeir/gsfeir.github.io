@@ -48,8 +48,7 @@ window.PUBLICATIONS = [
     year: 2027,
     authors: "Sfeir, G., Hess, S., Hancock, T.O., Rodrigues, F., Rad, J.A., Bliemer, M., Beck, M., Khan, F.",
     title: "A Bayesian latent class reinforcement learning framework to capture adaptive, feedback-driven travel behaviour",
-    venue: "arXiv preprint arXiv:2512.14713",
-    note: "Transportation Research Part C: Emerging Technologies, 195, 106171",
+    venue: "Transportation Research Part C: Emerging Technologies, 195, 106171",
     link: "https://doi.org/10.1016/j.trc.2026.106171",
   },
   {
